@@ -6,12 +6,14 @@ const router = express.Router();
 // Define Your API Routes Here
 /* ************************************************************************* */
 
-// Define item-related routes
-import itemActions from "./modules/item/itemActions";
+// Define note-related routes
+import noteActions from "./modules/note/noteActions";
 
-router.get("/api/items", itemActions.browse);
-router.get("/api/items/:id", itemActions.read);
-router.post("/api/items", itemActions.add);
+router.get("/api/notes", noteActions.browse);
+router.get("/api/notes/:id(\\d+)", noteActions.read);
+router.get("/api/notes/:slug", noteActions.readBySlug);
+router.post("/api/notes", noteActions.add);
+router.put("/api/notes/:id", noteActions.edit);
 
 /* ************************************************************************* */
 
