@@ -1,19 +1,22 @@
-<h1>Notefy Database Schema</h1>
+# Notefy Project Documentation
 
-<h2>Notes Table :</h2>
-- id : unique id for each note<br>
-- name : name of the note VARCHAR(25) NOT NULL<br>
-- content_id : content_id of the note VARCHAR(10) NULL unique<br>
-- slug : slug of the note VARCHAR(10) NOT NULL unique<br>
-- is_private : boolean to check if the note is private or not BOOLEAN NOT NULL<br>
-- linkshare : boolean to check if the note is shared or not BOOLEAN NOT NULL<br>
-- password : password of the note VARCHAR(255) NULL<br>
-- created_at : date and time when th e note was created TIMESTAMP NOT NULL<br>
-- updated_at : date and time when the note was last updated TIMESTAMP NOT NULL<br>
+Welcome to the professional documentation for the **Notefy** application. This project is a robust, functional prototype designed to demonstrate modern web development standards.
 
-<h2>Content Table :</h2>
-- id : unique id for each content<br>
-- note_id : id of the note TEXT NOT NULL<br>
-- content : content of the note TEXT NOT NULL<br>
-- created_at : date and time when th e note was created TIMESTAMP NOT NULL<br>
-- updated_at : date and time when the note was last updated TIMESTAMP NOT NULL<br>
+## Project Vision
+Notefy is a business-oriented application for managing persistent data with a focus on security, scalability, and user experience.
+
+## Key Features
+- **User Authentication**: Secure login/registration using Argon2 hashing and JWT tokens.
+- **RESTful API**: Structured endpoints for managing users and notes.
+- **Data Persistence**: Reliable MySQL database with a clean relational schema.
+- **Dynamic Content**: Auto-generated slugs and content versioning.
+
+## Document Index
+- [API Documentation](./API_DOCUMENTATION.md): Detailed endpoint definitions and authentication guide.
+- [Database Schema](./mcd/readme.md): Description of the relational model.
+
+## Architecture
+The project follows a modular architecture:
+- **Client**: React-based SPA for a modern UI.
+- **Server**: Express.js with a module-based repository pattern.
+- **Database**: Relational MySQL schema.
