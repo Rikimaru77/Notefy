@@ -74,7 +74,7 @@ class NoteRepository {
        where n.slug = ?`,
       [slug],
     );
-
+    
     return rows[0] as Note;
   }
 
