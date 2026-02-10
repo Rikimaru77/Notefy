@@ -9,7 +9,7 @@ const router = express.Router();
 // Define auth-related routes
 import authActions from "./modules/auth/authActions";
 import userActions from "./modules/user/userActions";
-import authService from "./services/auth";
+import authService from "./utils/auth";
 
 router.post("/api/login", authActions.login);
 router.post("/api/users", authService.hashPassword, userActions.add);
