@@ -1,28 +1,34 @@
 import AbstractSeeder from "./AbstractSeeder";
+import argon2 from "argon2";
 
 class UserSeeder extends AbstractSeeder {
-  constructor() {
-    // Call the constructor of the parent class (AbstractSeeder) with appropriate options
-    super({ table: "user", truncate: true });
-  }
-
-  // The run method - Populate the 'user' table with fake data
-
-  run() {
-    // Generate and insert fake data into the 'user' table
-    for (let i = 0; i < 10; i += 1) {
-      // Generate fake user data
-      const fakeUser = {
-        email: this.faker.internet.email(), // Generate a fake email using faker library
-        password: this.faker.internet.password(), // Generate a fake password using faker library
-        refName: `user_${i}`, // Create a reference name for the user
-      };
-
-      // Insert the fakeUser data into the 'user' table
-      this.insert(fakeUser); // insert into user(email, password) values (?, ?)
+    constructor() {
+        super({ table: "user", truncate: true });
     }
-  }
+
+    async run() {
+        const hashedPassword = await argon2.hash("password123");
+
+        for (let i = 0; i < 5; i++) {
+            this.insert({
+                email: this.faker.internet.email(),
+                password: hashedPassword,
+                firstname: this.faker.person.firstName(),
+                lastname: this.faker.person.lastName(),
+                role: "user",
+                refName: `user_${i}`,
+            });
+        }
+
+        this.insert({
+            email: "admin@notefy.com",
+            password: hashedPassword,
+            firstname: "Admin",
+            lastname: "Notefy",
+            role: "admin",
+            refName: "admin",
+        });
+    }
 }
 
-// Export the UserSeeder class
 export default UserSeeder;

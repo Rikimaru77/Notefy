@@ -1,0 +1,54 @@
+import argon2 from "argon2";
+import jwt from "jsonwebtoken";
+import type { RequestHandler } from "express";
+
+const hashingOptions = {
+    type: argon2.argon2id,
+    memoryCost: 2 ** 16,
+    timeCost: 5,
+    parallelism: 1,
+};
+
+const hashPassword: RequestHandler = async (req, res, next) => {
+    try {
+        const { password } = req.body;
+
+        if (!password) {
+            res.sendStatus(400);
+            return;
+        }
+
+        const hashedPassword = await argon2.hash(password, hashingOptions);
+
+        req.body.password = hashedPassword;
+
+        next();
+    } catch (err) {
+        next(err);
+    }
+};
+
+const verifyToken: RequestHandler = (req, res, next) => {
+    try {
+        const authorization = req.get("Authorization");
+
+        if (authorization == null) {
+            throw new Error("Authorization header is missing");
+        }
+
+        const [type, token] = authorization.split(" ");
+
+        if (type !== "Bearer") {
+            throw new Error("Authorization type is not Bearer");
+        }
+
+        req.body.auth = jwt.verify(token, process.env.APP_SECRET as string);
+
+        next();
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(401);
+    }
+};
+
+export default { hashPassword, verifyToken };

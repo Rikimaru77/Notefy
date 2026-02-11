@@ -1,5 +1,6 @@
 // Load environment variables from .env file
 import "dotenv/config";
+import { pathToFileURL } from "node:url";
 
 import fs from "node:fs";
 import path from "node:path";
@@ -22,7 +23,7 @@ const seed = async () => {
 
     for (const filePath of filePaths) {
       const { default: SeederClass } = await import(
-	`file://${path.join(fixturesPath, filePath)}`
+        pathToFileURL(path.join(fixturesPath, filePath)).href
       );
 
       const seeder = new SeederClass() as AbstractSeeder;
@@ -78,8 +79,7 @@ const seed = async () => {
       `${process.env.DB_NAME} filled from '${path.normalize(fixturesPath)}' 🌱`,
     );
   } catch (err) {
-    const { message, stack } = err as Error;
-    console.error("Error filling the database:", message, stack);
+    console.error("Error filling the database:", err);
   }
 };
 

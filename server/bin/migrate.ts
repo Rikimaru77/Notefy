@@ -1,5 +1,6 @@
 // Load environment variables from .env file
 import "dotenv/config";
+import { pathToFileURL } from "node:url";
 
 import fs from "node:fs";
 import path from "node:path";
@@ -21,7 +22,7 @@ const migrate = async () => {
     // Create a specific connection to the database
     const database = await mysql.createConnection({
       host: DB_HOST,
-      port: DB_PORT as number | undefined,
+      port: Number(DB_PORT),
       user: DB_USER,
       password: DB_PASSWORD,
       multipleStatements: true, // Allow multiple SQL statements
@@ -44,8 +45,7 @@ const migrate = async () => {
 
     console.info(`${DB_NAME} updated from '${path.normalize(schema)}' 🆙`);
   } catch (err) {
-    const { message, stack } = err as Error;
-    console.error("Error updating the database:", message, stack);
+    console.error("Error updating the database:", err);
   }
 };
 

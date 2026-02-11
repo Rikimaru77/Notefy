@@ -43,7 +43,7 @@ abstract class AbstractSeeder implements SeederOptions {
     this.faker = faker;
   }
 
-  async #doInsert(data: { refName?: string } & object) {
+  async #doInsert(data: Record<string, unknown> & { refName?: string }) {
     // Extract ref name (if it exists)
     const { refName, ...values } = data;
 
@@ -65,7 +65,7 @@ abstract class AbstractSeeder implements SeederOptions {
     }
   }
 
-  insert(data: { refName?: string } & object) {
+  insert(data: Record<string, unknown> & { refName?: string }) {
     this.promises.push(this.#doInsert(data));
   }
 
