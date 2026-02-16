@@ -3,7 +3,7 @@ import favoriteRepository from "./favoriteRepository";
 
 const add: RequestHandler = async (req, res, next) => {
     try {
-        const userId = req.body.auth.sub;
+        const userId = (req as any).auth.sub;
         const { noteId } = req.body;
 
         if (!noteId) {
@@ -20,7 +20,7 @@ const add: RequestHandler = async (req, res, next) => {
 
 const browse: RequestHandler = async (req, res, next) => {
     try {
-        const userId = req.body.auth.sub;
+        const userId = (req as any).auth.sub;
         const favorites = await favoriteRepository.readAllByUser(userId);
 
         res.json(favorites);
@@ -31,7 +31,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const remove: RequestHandler = async (req, res, next) => {
     try {
-        const userId = req.body.auth.sub;
+        const userId = (req as any).auth.sub;
         const noteId = Number(req.params.id);
 
         const affectedRows = await favoriteRepository.delete(userId, noteId);

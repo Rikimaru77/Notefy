@@ -22,13 +22,14 @@ class NoteRepository {
       await connection.beginTransaction();
 
       const [noteResult] = await connection.query<Result>(
-        "insert into notes (name, slug, is_private, linkshare, password) values (?, ?, ?, ?, ?)",
+        "insert into notes (name, slug, is_private, linkshare, password, user_id) values (?, ?, ?, ?, ?, ?)",
         [
           note.name,
           note.slug,
           note.is_private,
           note.linkshare,
           note.password,
+          (note as any).user_id,
         ],
       );
 
@@ -74,14 +75,16 @@ class NoteRepository {
        where n.slug = ?`,
       [slug],
     );
-    
+
     return rows[0] as Note;
   }
 
-  async readAll() {
+  async readAll(userId?: number) {
     const [rows] = await databaseClient.query<Rows>(
       `select n.*, c.content from notes n 
-       left join content c on n.id = c.note_id`,
+       left join content c on n.id = c.note_id
+       where n.is_private = false ${userId ? "OR n.user_id = ?" : ""}`,
+      userId ? [userId] : [],
     );
 
     return rows as Note[];

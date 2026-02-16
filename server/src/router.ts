@@ -17,9 +17,10 @@ router.post("/api/users", authService.hashPassword, userActions.add);
 // Define note-related routes
 import noteActions from "./modules/note/noteActions";
 
-router.get("/api/notes", noteActions.browse);
+router.get("/api/notes", authService.optionalVerifyToken, noteActions.browse);
 router.get("/api/notes/:id(\\d+)", noteActions.read);
 router.get("/api/notes/:slug", noteActions.readBySlug);
+router.post("/api/notes/:slug/verify-password", noteActions.verifyPassword);
 
 // Protected routes
 router.use(authService.verifyToken);

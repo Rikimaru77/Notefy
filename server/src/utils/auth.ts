@@ -42,7 +42,7 @@ const verifyToken: RequestHandler = (req, res, next) => {
             throw new Error("Authorization type is not Bearer");
         }
 
-        req.body.auth = jwt.verify(token, process.env.APP_SECRET as string);
+        (req as any).auth = jwt.verify(token, process.env.APP_SECRET as string);
 
         next();
     } catch (err) {
@@ -51,4 +51,22 @@ const verifyToken: RequestHandler = (req, res, next) => {
     }
 };
 
-export default { hashPassword, verifyToken };
+const optionalVerifyToken: RequestHandler = (req, res, next) => {
+    try {
+        const authorization = req.get("Authorization");
+
+        if (authorization != null) {
+            const [type, token] = authorization.split(" ");
+
+            if (type === "Bearer") {
+                (req as any).auth = jwt.verify(token, process.env.APP_SECRET as string);
+            }
+        }
+
+        next();
+    } catch (err) {
+        next();
+    }
+};
+
+export default { hashPassword, verifyToken, optionalVerifyToken };
