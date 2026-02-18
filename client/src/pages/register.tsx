@@ -18,8 +18,12 @@ export default function Register() {
 
             if (response.status === 201) {
                 navigate("/login");
+            } else if (response.status === 409) {
+                alert("Vous posedez déjà un compte avec cette adresse email !");
+            } else if (response.status === 500) {
+                alert("Une erreur est survenue !");
             } else {
-                alert("Échec de l'inscription");
+                alert("Une erreur est survenue !");
             }
         } catch (err) {
             console.error(err);

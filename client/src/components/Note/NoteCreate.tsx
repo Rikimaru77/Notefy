@@ -34,9 +34,11 @@ export default function NoteCreate({ token, onSuccess }: NoteCreateProps) {
                 setIsPrivate(false);
                 setPassword("");
                 onSuccess();
+            } else {
+                alert("Echec de la création de la note");
             }
         } catch (err) {
-            console.error(err);
+            console.error("Erreur lors de la création de la note : ", err);
         }
     };
 

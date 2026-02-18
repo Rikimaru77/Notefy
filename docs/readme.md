@@ -1,3 +1,0 @@
-# Notefy Project Documentation
-
-soon

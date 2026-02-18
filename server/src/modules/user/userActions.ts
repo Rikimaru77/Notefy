@@ -29,7 +29,7 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const newUser = {
       email: req.body.email,
-      password: req.body.password, // TODO: hash password
+      password: req.body.password,
       firstname: req.body.firstname || null,
       lastname: req.body.lastname || null,
       role: req.body.role || "user",
@@ -38,7 +38,15 @@ const add: RequestHandler = async (req, res, next) => {
     const insertId = await userRepository.create(newUser);
     res.status(201).json({ insertId });
   } catch (err) {
-    next(err);
+    if (err instanceof Error) {
+      if (err.message.includes("Duplicate")) {
+        res.status(409).json({ error: "Email already exists" });
+      } else {
+        res.status(500).json({ error: "Server error" });
+      }
+    } else {
+      res.status(500).json({ error: "Server error" });
+    }
   }
 };
 

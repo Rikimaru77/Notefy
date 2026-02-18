@@ -36,9 +36,11 @@ export default function NoteEdit({ note, token, onCancel, onUpdateSuccess }: Not
 
             if (response.ok) {
                 onUpdateSuccess();
+            } else {
+                console.error("Echec de la mise à jour de la note");
             }
         } catch (err) {
-            console.error(err);
+            console.error("Erreur lors de la mise à jour de la note : ", err);
         }
     };
 
