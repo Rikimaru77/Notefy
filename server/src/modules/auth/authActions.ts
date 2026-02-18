@@ -22,7 +22,7 @@ const login: RequestHandler = async (req, res, next) => {
             const token = jwt.sign(
                 { sub: user.id, role: user.role },
                 process.env.APP_SECRET as string,
-                { expiresIn: "1h" },
+                { expiresIn: "24h" },
             );
 
             res.json({ token, user });

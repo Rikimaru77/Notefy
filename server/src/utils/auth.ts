@@ -46,7 +46,13 @@ const verifyToken: RequestHandler = (req, res, next) => {
 
         next();
     } catch (err) {
-        console.error(err);
+        if (err instanceof jwt.TokenExpiredError) {
+            console.warn("JWT expired:", err.expiredAt);
+        } else if (err instanceof jwt.JsonWebTokenError) {
+            console.warn("Invalid JWT:", err.message);
+        } else {
+            console.error(err);
+        }
         res.sendStatus(401);
     }
 };
@@ -65,6 +71,7 @@ const optionalVerifyToken: RequestHandler = (req, res, next) => {
 
         next();
     } catch (err) {
+        // If the token is invalid or expired, we just ignore it in optional verification
         next();
     }
 };

@@ -9,6 +9,7 @@ interface NoteViewProps {
     onToggleFavorite: () => void;
     onShare: () => void;
     onEdit: () => void;
+    onDelete: () => void;
 }
 
 export default function NoteView({
@@ -18,7 +19,8 @@ export default function NoteView({
     showCopied,
     onToggleFavorite,
     onShare,
-    onEdit
+    onEdit,
+    onDelete
 }: NoteViewProps) {
     return (
         <div className="max-w-4xl mx-auto">
@@ -43,6 +45,12 @@ export default function NoteView({
                                 className="bg-gray-800 dark:bg-gray-700 text-white px-4 py-2 hover:bg-gray-900 dark:hover:bg-gray-600 transition text-sm font-medium"
                             >
                                 Modifier
+                            </button>
+                            <button
+                                onClick={onDelete}
+                                className="bg-red-800 dark:bg-red-700 text-white px-4 py-2 hover:bg-red-900 dark:hover:bg-red-600 transition text-sm font-medium"
+                            >
+                                Supprimer
                             </button>
                         </>
                     )}

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import type { Note } from "../types";
 import NoteView from "../components/Note/NoteView";
 import NoteEdit from "../components/Note/NoteEdit";
+import { islogin, logout } from "../utils/auth";
 
 export default function NotePage() {
     const { slug } = useParams();
@@ -16,9 +17,14 @@ export default function NotePage() {
     const [showCopied, setShowCopied] = useState(false);
 
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+    const token = document.cookie.split("=")[1];
+
+    const handleLogout = () => {
+        logout();
+    };
 
     useEffect(() => {
+        islogin(false);
         fetchNote();
         if (token) {
             checkFavorite();
@@ -27,7 +33,13 @@ export default function NotePage() {
 
     const fetchNote = async () => {
         try {
-            const response = await fetch(`/api/notes/${slug}`);
+            const response = await fetch(`/api/notes/${slug}`, {
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+            });
+            if (response.status === 401) {
+                handleLogout();
+                return;
+            }
             if (response.ok) {
                 const data = await response.json();
                 setNote(data);
@@ -47,6 +59,10 @@ export default function NotePage() {
             const response = await fetch("/api/favorites", {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (response.status === 401) {
+                handleLogout();
+                return;
+            }
             if (response.ok) {
                 const favorites = await response.json();
                 const isFav = favorites.some((f: any) => f.slug === slug);
@@ -86,6 +102,10 @@ export default function NotePage() {
                     method: "DELETE",
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                if (response.status === 401) {
+                    handleLogout();
+                    return;
+                }
                 if (response.ok) setIsFavorited(false);
             } else {
                 const response = await fetch("/api/favorites", {
@@ -96,8 +116,31 @@ export default function NotePage() {
                     },
                     body: JSON.stringify({ noteId: note.id })
                 });
+                if (response.status === 401) {
+                    handleLogout();
+                    return;
+                }
                 if (response.ok) setIsFavorited(true);
             }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
+
+    const handleDelete = async () => {
+        if (!token || !note) return;
+        try {
+            const response = await fetch(`/api/notes/${note.id}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.status === 401) {
+                handleLogout();
+                return;
+            }
+            if (response.ok) navigate("/");
         } catch (err) {
             console.error(err);
         }
@@ -167,6 +210,7 @@ export default function NotePage() {
                 onToggleFavorite={handleToggleFavorite}
                 onShare={handleShare}
                 onEdit={() => setIsEditing(true)}
+                onDelete={handleDelete}
             />
         </div>
     );

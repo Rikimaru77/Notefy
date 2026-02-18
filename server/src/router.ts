@@ -27,6 +27,7 @@ router.use(authService.verifyToken);
 
 router.post("/api/notes", noteActions.add);
 router.put("/api/notes/:id", noteActions.edit);
+router.delete("/api/notes/:id", noteActions.remove);
 
 router.get("/api/users", userActions.browse);
 router.get("/api/users/:id", userActions.read);

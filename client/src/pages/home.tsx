@@ -3,14 +3,16 @@ import { useNavigate, Link } from "react-router";
 import type { Note } from "../types";
 import { useTheme } from "../utils/theme";
 import NoteCreate from "../components/Note/NoteCreate";
+import { islogin } from "../utils/auth";
 
 export default function Home() {
     const { theme, toggleTheme } = useTheme();
     const [notes, setNotes] = useState<Note[]>([]);
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+    const token = document.cookie.split("=")[1];
 
     useEffect(() => {
+        islogin(false);
         fetchNotes();
     }, [token]);
 
@@ -19,6 +21,10 @@ export default function Home() {
             const response = await fetch("/api/notes", {
                 headers: token ? { Authorization: `Bearer ${token}` } : {},
             });
+            if (response.status === 401) {
+                handleLogout();
+                return;
+            }
             if (response.ok) {
                 const data = await response.json();
                 setNotes(data);
@@ -29,8 +35,7 @@ export default function Home() {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        document.cookie = "token=; path=/; max-age=0";
         navigate("/login");
     };
 
@@ -92,8 +97,8 @@ export default function Home() {
                                     <div className="flex justify-between items-start">
                                         <p className="font-medium truncate text-gray-900 dark:text-white">{note.name || "Sans titre"}</p>
                                         <div className="flex gap-1">
-                                            {note.is_private && <span className="text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded">PRIVE</span>}
-                                            {note.hasPassword && <span className="text-[10px] bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded">🔒</span>}
+                                            {note.is_private ? <span className="text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded">PRIVE</span> : null}
+                                            {note.hasPassword ? <span className="text-[10px] bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 px-1.5 py-0.5 rounded">🔒</span> : null}
                                         </div>
                                     </div>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">{note.slug}</p>

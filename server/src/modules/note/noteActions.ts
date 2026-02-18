@@ -146,4 +146,19 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, readBySlug, verifyPassword, add, edit };
+const remove: RequestHandler = async (req, res, next) => {
+  try {
+    const noteId = Number(req.params.id);
+    const affectedRows = await noteRepository.delete(noteId);
+
+    if (affectedRows) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, readBySlug, verifyPassword, add, edit, remove };
