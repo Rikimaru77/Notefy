@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import Footer from "../components/Footer";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -63,6 +64,7 @@ export default function Register() {
                         Connexion
                     </Link>
                 </div>
+                <Footer />
             </div>
         </div>
     );

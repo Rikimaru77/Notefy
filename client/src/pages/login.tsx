@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import Footer from "../components/Footer";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -65,6 +66,7 @@ export default function Login() {
                         Inscription
                     </Link>
                 </div>
+                <Footer />
             </div>
         </div>
     );

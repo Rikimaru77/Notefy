@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useParams, useNavigate } from "react-router";
 import type { Note } from "../types";
-import NoteView from "../components/Note/NoteView";
-import NoteEdit from "../components/Note/NoteEdit";
+import { lazy } from "react";
 import { islogin, logout } from "../utils/auth";
+import Loading from "../components/Loading";
+
+const NoteView = lazy(() => import("../components/Note/NoteView"));
+const NoteEdit = lazy(() => import("../components/Note/NoteEdit"));
 
 export default function NotePage() {
     const { slug } = useParams();
     const [note, setNote] = useState<Note | null>(null);
-    const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
 
     const [passwordInput, setPasswordInput] = useState("");
@@ -49,8 +51,6 @@ export default function NotePage() {
         } catch (err) {
             console.error(err);
             navigate("/");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -153,14 +153,6 @@ export default function NotePage() {
         setTimeout(() => setShowCopied(false), 2000);
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors">
-                <p className="text-gray-500 dark:text-gray-400 italic">Chargement...</p>
-            </div>
-        );
-    }
-
     if (!note) return null;
 
     if (note.hasPassword && note.content === null) {
@@ -190,28 +182,32 @@ export default function NotePage() {
     if (isEditing) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8 transition-colors">
-                <NoteEdit
-                    note={note}
-                    token={token}
-                    onCancel={() => setIsEditing(false)}
-                    onUpdateSuccess={() => { setIsEditing(false); fetchNote(); }}
-                />
+                <Suspense fallback={<Loading />}>
+                    <NoteEdit
+                        note={note}
+                        token={token}
+                        onCancel={() => setIsEditing(false)}
+                        onUpdateSuccess={() => { setIsEditing(false); fetchNote(); }}
+                    />
+                </Suspense>
             </div>
         );
     }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8 transition-colors">
-            <NoteView
-                note={note}
-                token={token}
-                isFavorited={isFavorited}
-                showCopied={showCopied}
-                onToggleFavorite={handleToggleFavorite}
-                onShare={handleShare}
-                onEdit={() => setIsEditing(true)}
+            <Suspense fallback={<Loading />}>
+                <NoteView
+                    note={note}
+                    token={token}
+                    isFavorited={isFavorited}
+                    showCopied={showCopied}
+                    onToggleFavorite={handleToggleFavorite}
+                    onShare={handleShare}
+                    onEdit={() => setIsEditing(true)}
                 onDelete={handleDelete}
             />
+            </Suspense>
         </div>
     );
 }

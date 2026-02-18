@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Note } from "../../types";
+import Footer from "../Footer";
 
 interface NoteEditProps {
     note: Note;
@@ -98,6 +99,7 @@ export default function NoteEdit({ note, token, onCancel, onUpdateSuccess }: Not
                     </button>
                 </form>
             </main>
+            <Footer />
         </div>
     );
 }

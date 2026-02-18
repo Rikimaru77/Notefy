@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { Note } from "../../types";
+import Footer from "../Footer";
 
 interface NoteViewProps {
     note: Note;
@@ -79,6 +80,7 @@ export default function NoteView({
                     {note.content}
                 </pre>
             </main>
+            <Footer />
         </div>
     );
 }

@@ -1,6 +1,6 @@
 export function islogin(require: boolean) {
     const token = getCookie("token");
-    if (!token) return require ? logout() : false;
+    if (!token || token === null) return require ? logout() : false;
 
     try {
         const { exp } = JSON.parse(atob(token.split('.')[1]));
@@ -11,10 +11,11 @@ export function islogin(require: boolean) {
 }
 
 function getCookie(name: string) {
-    return document.cookie
+    const cookie = document.cookie
         .split("; ")
         .find(row => row.startsWith(name + "="))
         ?.split("=")[1];
+    return cookie;
 }
 
 export function logout() {
